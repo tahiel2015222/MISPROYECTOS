@@ -149,8 +149,8 @@ class Snake3D {
         this.headGroup.add(tongueGroup);
         this.tongueMesh = tongueGroup;
 
-        // 5. Faro de proyección frontal dinámico (Ilumina la arena en tiempo real)
-        const light = new THREE.PointLight(this.primaryColor, 3.5, 9.0);
+        // 5. Faro de proyección frontal dinámico (Ilumina la arena en tiempo real con luz suave)
+        const light = new THREE.PointLight(this.primaryColor, 2.4, 7.0);
         light.position.set(0, 0.3, 0.7);
         light.castShadow = true;
         light.shadow.bias = -0.002;
