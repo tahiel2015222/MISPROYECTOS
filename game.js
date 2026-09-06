@@ -93,7 +93,7 @@ class GameEngine {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.25;
+        this.renderer.toneMappingExposure = 1.15;
 
         // Limpiar contenedor y agregar canvas
         this.container.innerHTML = '';
@@ -127,9 +127,9 @@ class GameEngine {
 
                 const bloomPass = new THREE.UnrealBloomPass(
                     new THREE.Vector2(window.innerWidth, window.innerHeight),
-                    1.25,  // bloom strength
-                    0.45,  // bloom radius
-                    0.32   // bloom threshold
+                    1.12,  // bloom strength (calibrado para no tapar áreas)
+                    0.38,  // bloom radius (halo más contenido)
+                    0.36   // bloom threshold (evita deslumbramiento en superficies oscuras)
                 );
                 this.bloomPass = bloomPass;
 
