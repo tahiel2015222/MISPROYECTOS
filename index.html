@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snake 3D Ultra - Next-Gen WebGL</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Three.js & Post-Processing (UnrealBloomPass) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+</head>
+<body>
+
+    <!-- Contenedor 3D WebGL -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD de Juego -->
+    <div id="hud">
+        <div class="top-bar">
+            <!-- Marcador de Puntos -->
+            <div class="score-panel">
+                <div class="score-item">
+                    <span class="score-label">Puntos</span>
+                    <span class="score-value" id="score-val">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Récord</span>
+                    <span class="score-value" id="highscore-val">0</span>
+                </div>
+                <div id="combo-badge" class="combo-badge hidden">COMBO x2!</div>
+            </div>
+
+            <!-- Botones de Control Rápido -->
+            <div class="control-buttons">
+                <button id="btn-camera" class="cyber-btn-small" title="Cambiar Vista (Tecla C)">📹 Isométrica 3D (Recomendado)</button>
+                <button id="btn-theme" class="cyber-btn-small" title="Cambiar Tema (Tecla T)">🎨 Cyberpunk Synthwave</button>
+                <button id="btn-audio" class="cyber-btn-small" title="Silenciar / Activar Música (Tecla M)">🔊 Audio ON</button>
+                <button id="btn-graphics" class="cyber-btn-small" title="Alternar Calidad de Gráficos">⚡ Calidad: ULTRA (Bloom)</button>
+            </div>
+        </div>
+
+        <!-- D-Pad Virtual para Móviles / Tablets -->
+        <div class="mobile-dpad">
+            <button id="dpad-up" class="dpad-btn">▲</button>
+            <button id="dpad-down" class="dpad-btn">▼</button>
+            <button id="dpad-left" class="dpad-btn">◀</button>
+            <button id="dpad-right" class="dpad-btn">▶</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Inicio -->
+    <div id="start-screen" class="modal-overlay">
+        <div class="modal-content">
+            <h1 class="cyber-title">SNAKE 3D</h1>
+            <p class="cyber-subtitle">Ultra Graphics Experience</p>
+
+            <div class="feature-list">
+                <div class="feature-item"><span>⚡</span> Gráficos Three.js & Bloom</div>
+                <div class="feature-item"><span>🐍</span> Serpiente Mecha Articulada</div>
+                <div class="feature-item"><span>🎵</span> Música Synthwave Procedural</div>
+                <div class="feature-item"><span>🌟</span> Frutas Míticas & Power-ups</div>
+                <div class="feature-item"><span>📹</span> 3 Cámaras Cinemáticas</div>
+                <div class="feature-item"><span>💥</span> Ondas de Choque & Partículas</div>
+            </div>
+
+            <button id="btn-start" class="cyber-btn-large">INICIAR JUEGO</button>
+
+            <div class="controls-guide">
+                <div><span class="key-badge">W A S D</span> / <span class="key-badge">▲ ▼ ◀ ▶</span> Moverse</div>
+                <div><span class="key-badge">C</span> Cámara</div>
+                <div><span class="key-badge">T</span> Tema</div>
+                <div><span class="key-badge">Espacio</span> Pausa</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Game Over -->
+    <div id="game-over-screen" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h1 class="cyber-title" style="background: linear-gradient(135deg, #fff 0%, #ff0055 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">COLISIÓN CRÍTICA</h1>
+            <p class="cyber-subtitle" style="color: #ff0077;">SISTEMA DESCONECTADO</p>
+
+            <div class="results-grid">
+                <div>
+                    <div class="score-label">Puntuación Final</div>
+                    <div class="result-val" id="final-score">0</div>
+                </div>
+                <div>
+                    <div class="score-label">Mejor Récord</div>
+                    <div class="result-val highlight" id="final-highscore">0</div>
+                </div>
+            </div>
+
+            <button id="btn-restart" class="cyber-btn-large" style="background: linear-gradient(135deg, #ff0077 0%, #ff5500 100%);">REINTENTAR (ESPACIO)</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Pausa -->
+    <div id="pause-screen" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h1 class="cyber-title">PAUSA</h1>
+            <p class="cyber-subtitle">Misión en Espera</p>
+            <p style="color: #8da2c0; margin-bottom: 25px;">Presiona <span class="key-badge">Espacio</span> para continuar</p>
+        </div>
+    </div>
+
+    <!-- Scripts del Juego -->
+    <script src="audio.js"></script>
+    <script src="particles.js"></script>
+    <script src="food.js"></script>
+    <script src="snake.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
+
