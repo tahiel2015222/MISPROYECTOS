@@ -22,7 +22,7 @@ class FoodManager {
         const coreMat = new THREE.MeshPhysicalMaterial({
             color: color,
             emissive: color,
-            emissiveIntensity: 1.2,
+            emissiveIntensity: 1.0,
             roughness: 0.15,
             metalness: 0.8,
             clearcoat: 1.0,
@@ -57,7 +57,7 @@ class FoodManager {
         group.add(ring2);
 
         // 4. Luz puntual dinámica para iluminar el suelo y la serpiente
-        const light = new THREE.PointLight(color, 2.5, 6.0);
+        const light = new THREE.PointLight(color, 1.8, 5.0);
         light.position.set(0, 0.2, 0);
         group.add(light);
 
@@ -95,7 +95,7 @@ class FoodManager {
         const coreMat = new THREE.MeshPhysicalMaterial({
             color: mainColor,
             emissive: mainColor,
-            emissiveIntensity: 1.8,
+            emissiveIntensity: 1.4,
             roughness: 0.1,
             metalness: 0.9,
             clearcoat: 1.0
@@ -126,8 +126,8 @@ class FoodManager {
             satellites.push(sat);
         }
 
-        // Luz dinámica de alta intensidad
-        const light = new THREE.PointLight(mainColor, 3.5, 8.0);
+        // Luz dinámica calibrada
+        const light = new THREE.PointLight(mainColor, 2.6, 6.5);
         light.position.set(0, 0.3, 0);
         group.add(light);
 
@@ -225,10 +225,10 @@ class FoodManager {
             ud.ring2.rotation.y += delta * -2.4;
             ud.ring2.rotation.x += delta * 1.2;
 
-            // Pulso de luz y emisión
-            const pulse = 1.0 + Math.sin(t * 2) * 0.35;
-            ud.light.intensity = 2.5 * pulse;
-            ud.core.material.emissiveIntensity = 1.2 * pulse;
+            // Pulso de luz y emisión suave
+            const pulse = 1.0 + Math.sin(t * 2) * 0.25;
+            ud.light.intensity = 1.8 * pulse;
+            ud.core.material.emissiveIntensity = 1.0 * pulse;
         }
 
         // Actualizar comida especial
@@ -272,8 +272,8 @@ class FoodManager {
                 });
             }
 
-            const sPulse = 1.0 + Math.sin(st * 3) * 0.45;
-            sud.light.intensity = 3.5 * sPulse;
+            const sPulse = 1.0 + Math.sin(st * 3) * 0.35;
+            sud.light.intensity = 2.6 * sPulse;
         }
     }
 
