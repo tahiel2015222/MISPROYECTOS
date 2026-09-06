@@ -232,16 +232,7 @@ class GameEngine {
         this.food.spawnNormalFood(this.snake.gridPositions);
     }
 
-    // 5. Configuración de eventos (Teclado, Pantalla táctil, Redimensionado)
-    setupEvents() {
-        window.addEventListener('resize', () => {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-            this.composer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-    // 5. Configuración de eventos (Teclado, Pantalla táctil, Redimensionado y Gestos)
+    // 5. Manejo de entradas (Teclado, Pantalla táctil, Gestos)
     handleInput(action) {
         if (this.state !== 'PLAYING') return;
 
@@ -319,13 +310,26 @@ class GameEngine {
             }
         });
 
-        // Controles de botones UI
-        document.getElementById('btn-start').addEventListener('click', () => this.startGame());
-        document.getElementById('btn-restart').addEventListener('click', () => this.startGame());
-        document.getElementById('btn-camera').addEventListener('click', () => this.cycleCamera());
-        document.getElementById('btn-theme').addEventListener('click', () => this.cycleTheme());
-        document.getElementById('btn-audio').addEventListener('click', () => this.toggleAudio());
-        document.getElementById('btn-graphics').addEventListener('click', () => this.toggleGraphicsQuality());
+        // Controles de botones UI con soporte táctil y click inmediato
+        const addBtnClick = (id, callback) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                callback();
+            });
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                callback();
+            }, { passive: false });
+        };
+
+        addBtnClick('btn-start', () => this.startGame());
+        addBtnClick('btn-restart', () => this.startGame());
+        addBtnClick('btn-camera', () => this.cycleCamera());
+        addBtnClick('btn-theme', () => this.cycleTheme());
+        addBtnClick('btn-audio', () => this.toggleAudio());
+        addBtnClick('btn-graphics', () => this.toggleGraphicsQuality());
 
         // Controles virtuales para móvil/tablet
         const bindTouch = (id, action) => {
